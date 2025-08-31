@@ -1,0 +1,59 @@
+{% extends "base_landing.html" %}
+{% load static %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}">
+{% endblock  %}
+
+{% block content %}
+<!-- Common Front Section -->
+<div class="page-header d-flex align-items-center justify-content-center text-center" 
+     style="background: linear-gradient(135deg, #007777, #00a3a3); height: 300px; position: relative;">
+  
+  <!-- Overlay for soft dark effect -->
+  <div style="background: rgba(0,0,0,0.4); position: absolute; top:0; left:0; width:100%; height:100%;"></div>
+  
+  <div class="container position-relative">
+    <h1 class="text-white fw-bold">Contact</h1>
+    <p class="text-white-50">Empowering learners with knowledge, innovation, and growth.</p>
+  </div>
+</div>
+
+
+<!-- Contact / Help Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold" style="color:#007777;">Contact Us</h2>
+      <p class="text-muted">Have questions? Reach out through our Help & Support section.</p>
+    </div>
+
+    <div class="card p-4 shadow-lg border-0 rounded-3 mt-4"
+         style="max-width:700px; margin:auto; border-top:5px solid #007777;">
+      <h4 class="mb-3" style="color:#007777;">Contact & Support</h4>
+
+      <form action="{% url 'help_section' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Your Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Your Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Message</label>
+          <textarea name="message" rows="4" class="form-control" required></textarea>
+        </div>
+
+        <button type="submit" class="btn px-4" style="background-color: #007777; color: white;">Send</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,803 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}
+Admin - Dashboard
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://res.cloudinary.com/duhg4tvty/raw/upload/v1756632173/admin_dashboard_qpsoxb.css">
+{% endblock %}
+
+{% block sidebar %}
+
+<li><a class="capsule" href="{% url 'admin_dashboard' %}" style="cursor: pointer;"><i class="fa fa-home me-2"></i>
+    Dashboard</a></li>
+<li><a class="capsule" href="{% url 'manage_teachers' %}" style="cursor: pointer;"><i
+      class="fa fa-user-tie me-2"></i>Manage Teachers<a></li>
+<li><a href="{% url 'manage_students' %}" class="capsule" style="cursor: pointer;"><i class="fa fa-users me-2"></i>
+    Manage Students</a></li>
+<li><a href="{% url 'department' %}" class="capsule" style="cursor: pointer;"><i class="fa fa-building me-2"></i>
+    Departments</a></li>
+<li><a href="{% url 'ebook_list' %}" class="capsule" style="cursor: pointer;"><i
+      class="fa fa-calendar me-2"></i>E-Library</a></li>
+<li><a href="{% url 'log_out' %}" class="capsule"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
+
+
+{% endblock %}
+
+{% block main %}
+
+{% if admin_dashboard %}
+
+<div class="container-fluid py-3">
+  <div class="d-flex align-items-center mb-3">
+    <h4 class="mb-0">Admin <span class="brand-text">Dashboard</span></h4>
+    <a href="{% url 'add_student' %}" class="ms-auto btn btn-sm btn-brand">+ Add Student</a>
+  </div>
+
+  <!-- Top Stats -->
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card card-stat p-3">
+        <div class="label">Total Students</div>
+        <div class="value">{{ total_student }}</div>
+        <small class="text-muted">+{{ total_student }} this month</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-stat p-3">
+        <div class="label">Total Teachers</div>
+        <div class="value">{{ total_teachers }}</div>
+        <small class="text-muted">Active: {{ total_teachers }}</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-stat p-3">
+        <div class="label">Departments</div>
+        <div class="value">{{ total_deparments }}</div>
+        <small class="text-muted">New: {{ total_new_deparment }}</small>
+      </div>
+    </div>
+    <!-- <div class="col-md-3">
+      <div class="card card-stat p-3">
+        <div class="label">Fees Collected</div>
+        <div class="value">₹ 0</div>
+        <small class="text-muted">Pending: ₹ 0</small>
+      </div>
+    </div> -->
+  </div>
+
+<!-- recent studnet -->
+<div class="row g-3 mt-1">
+  <div class="col-lg-7 col-md-12">
+    <div class="card p-3 h-100">
+      <h6 class="mb-2">Recent Students</h6>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Dept</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in student_all %}
+            <tr>
+              <td>{{ s.name }}</td>
+              <td>{{ s.student.Email }}</td>
+              <td>{{ s.department }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-muted">No recent students.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+         </table>
+      </div>
+    </div>
+  </div>
+    <div class="col-lg-5">
+      <div class="card p-3" style="border-radius:14px;">
+        <div class="d-flex align-items-center mb-2">
+          <h6 class="mb-0">Quick Actions</h6>
+        </div>
+        <div class="d-grid gap-2">
+          <a href="{% url 'add_teachers' %}" class="btn btn-brand">+ Add Teachers</a>
+          <a href="{% url 'add_department' %}" class="btn btn-outline-secondary">+ Add Department</a>
+          <a href="{% url 'upload_ebooks' %}" class="btn btn-outline-secondary">Upload E-Library Book</a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- Bottom: Recent tables -->
+<div class="row g-1 mt-1">
+  <div class="col-lg-12 col-12">
+    <div class="card p-3" style="border-radius:14px;">
+      <h6 class="mb-2">Recent Teachers</h6>
+      
+      <!-- Responsive wrapper -->
+      <div class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Dept</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in teacher_details %}
+            <tr>
+              <td>{{ t.name }}</td>
+              <td>{{ t.teacher.Email }}</td>
+              <td>{{ t.department.name }}</td>
+            </tr>
+            {% endfor %}
+            {% if not teacher_details %}
+            <tr>
+              <td colspan="3" class="text-muted">No recent professors.</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /Responsive wrapper -->
+
+    </div>
+  </div>
+</div>
+
+
+{% endif %}
+
+<!-- Manage Teachers -->
+{% if manage_teachers %}
+<div class="container-fluid py-3">
+  <div class="d-flex align-items-center mb-3">
+    <h4 class="mb-0"><span class="brand-text" style="color:#007777;">Admin</span></h4>
+    <a href="{% url 'add_teachers' %}" class="ms-auto btn btn-sm btn-success">+ Add Teacher</a>
+  </div>
+</div>
+
+<div class="table-container" style="max-width:1200px; margin:auto;">
+  <!-- Header -->
+  <div class="table-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h3 class="mb-2 mb-md-0" style="color:#007777;">Manage Teacher</h3>
+    <form method="GET" class="d-flex flex-column flex-sm-row w-md-auto">
+      <input type="text" 
+             name="search" 
+             placeholder="Search Teacher..." 
+             class="form-control me-sm-2 mb-2 mb-sm-0"
+             value="{{ search_query }}">
+      <button type="submit" class="btn btn-primary  w-sm-auto">Search</button>
+    </form>
+  </div>
+  <!-- Teacher Table -->
+  <div class="table-responsive">
+    <table class="table align-middle table-hover" style="border-collapse: separate; border-spacing: 0 8px;">
+      <thead style="background-color:#007777; color:#fff; border-radius:8px;">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Profile</th>
+          <th>Designation</th>
+          <th>Department</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in all_teachers %}
+        <tr style="background-color:#fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius:5px;">
+          <td>{{ forloop.counter }}</td>
+          <td>{{ i.name }}</td>
+          <td>
+            {% if i.profile_image %}
+            <img src="{{ i.profile_image.url }}" class="profile-img rounded-circle"
+              style="width:45px;height:45px;object-fit:cover;">
+            {% else %}
+            N/A
+            {% endif %}
+          </td>
+          <td> {{ i.designation }} </td>
+          <td> {{ i.department.name }} </td>
+          <td>
+            <a href="{% url 'edit_teacher' pk=i.id %}" class="btn btn-sm btn-outline-success me-1">Edit</a>
+            <a href="{% url 'delete_teacher' pk=i.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+        {% if not all_teachers %}
+        <tr>
+          <td colspan="6" class="text-center">No teachers found.</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+
+{% if add_teacher_form %}
+<div class="container mt-5" style="max-width: 600px;">
+  <h2 class="mb-4" style="color:#007777;">Add / Edit Teacher Profile</h2>
+
+  <form action="{% url 'add_teachers' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Name Field -->
+    <div class="mb-3">
+      <label for="id_name" class="form-label">Teacher Name</label>
+      {{ add_teacher_form.name }}
+      {% if add_teacher_form.name.errors %}
+      <div class="text-danger mt-1">
+        {% for error in add_teacher_form.name.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- teacher email -->
+    <div class="mb-3">
+      <label for="id_password" class="form-label">Email</label>
+      {{ add_teacher_form.email }}
+      {% if add_teacher_form.email.errors %}
+      <div class="text-danger mt-1">
+        {% for error in add_teacher_form.email.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Profile Image -->
+    <div class="mb-3">
+      <label for="id_profile_image" class="form-label">Profile Image</label>
+      {{ add_teacher_form.profile_image }}
+      {% if add_teacher_form.profile_image.errors %}
+      <div class="text-danger mt-1">
+        {% for error in add_teacher_form.profile_image.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Designation -->
+    <div class="mb-3">
+      <label for="id_designation" class="form-label">Designation</label>
+      {{ add_teacher_form.designation }}
+      {% if add_teacher_form.designation.errors %}
+      <div class="text-danger mt-1">
+        {% for error in add_teacher_form.designation.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Department -->
+    <div class="mb-3">
+      <label for="id_department" class="form-label">Department</label>
+      {{ add_teacher_form.department }}
+      {% if add_teacher_form.department.errors %}
+      <div class="text-danger mt-1">
+        {% for error in add_teacher_form.department.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Password Field -->
+    <div class="mb-3">
+      <label for="id_password" class="form-label">Password</label>
+      {{ add_teacher_form.password }}
+      {% if add_teacher_form.password.errors %}
+      <div class="text-danger mt-1">
+        {% for error in add_teacher_form.password.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+
+    <button type="submit" class="btn" style="background-color:#007777; color:#fff;">Save</button>
+  </form>
+</div>
+{% endif %}
+
+
+{% if edit_teacher_form %}
+<div class="container mt-5" style="max-width: 600px;">
+  <h2 class="mb-4" style="color:#007777;">Add / Edit Teacher Profile</h2>
+
+  <form action="{% url 'edit_teacher' edit_teacher_form.instance.id %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Name Field -->
+    <div class="mb-3">
+      <label for="id_name" class="form-label">Teacher Name</label>
+      {{ edit_teacher_form.name }}
+      {% if edit_teacher_form.name.errors %}
+      <div class="text-danger mt-1">
+        {% for error in edit_teacher_form.name.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- teacher email -->
+    <div class="mb-3">
+      <label for="id_password" class="form-label">Email</label>
+      {{ edit_teacher_form.email }}
+      {% if edit_teacher_form.email.errors %}
+      <div class="text-danger mt-1">
+        {% for error in edit_teacher_form.email.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Profile Image -->
+    <div class="mb-3">
+      <label for="id_profile_image" class="form-label">Profile Image</label>
+      {{ edit_teacher_form.profile_image }}
+      {% if edit_teacher_form.profile_image.errors %}
+      <div class="text-danger mt-1">
+        {% for error in edit_teacher_form.profile_image.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Designation -->
+    <div class="mb-3">
+      <label for="id_designation" class="form-label">Designation</label>
+      {{ edit_teacher_form.designation }}
+      {% if edit_teacher_form.designation.errors %}
+      <div class="text-danger mt-1">
+        {% for error in edit_teacher_form.designation.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Department -->
+    <div class="mb-3">
+      <label for="id_department" class="form-label">Department</label>
+      {{ edit_teacher_form.department }}
+      {% if edit_teacher_form.department.errors %}
+      <div class="text-danger mt-1">
+        {% for error in edit_teacher_form.department.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <!-- Password Field -->
+    <div class="mb-3">
+      <label for="id_password" class="form-label">Password</label>
+      {{ edit_teacher_form.password }}
+      {% if add_teacher_form.password.errors %}
+      <div class="text-danger mt-1">
+        {% for error in edit_teacher_form.password.errors %}
+        {{ error }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+
+    <button type="submit" class="btn" style="background-color:#007777; color:#fff;">Save</button>
+  </form>
+</div>
+{% endif %}
+
+{% if manage_students %}
+
+<div class="container-fluid py-3">
+  <div class="d-flex align-items-center mb-3">
+    <h4 class="mb-0"><span class="brand-text" style="color:#007777;">Admin</span></h4>
+    <a href="{% url 'add_student' %}" class="ms-auto btn btn-sm btn-success">+ Add Student</a>
+  </div>
+</div>
+<!-- Header -->
+  <div class="table-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h3 class="mb-2 mb-md-0" style="color:#007777;">Manage Student</h3>
+    <form method="GET" class="d-flex flex-column flex-sm-row w-md-auto">
+      <input type="text" 
+             name="search" 
+             placeholder="Search Student..." 
+             class="form-control me-sm-2 mb-2 mb-sm-0"
+             value="{{ search_query }}">
+      <button type="submit" class="btn btn-primary  w-sm-auto">Search</button>
+    </form>
+  </div>
+  <!-- Teacher Table -->
+  <div class="table-responsive">
+    <table class="table align-middle table-hover" style="border-collapse: separate; border-spacing: 0 8px;">
+      <thead style="background-color:#007777; color:#fff; border-radius:8px;">
+        <tr>
+          <th>S No.</th>
+          <th>Name</th>
+          <th>Profile</th>
+          <th>course</th>
+          <th>year</th>
+          <th>Roll No</th>
+          <th>Department</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in all_students %}
+        <tr style="background-color:#fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius:5px;">
+          <td>{{ forloop.counter }}</td>
+          <td>{{ i.name }}</td>
+          <td>
+            {% if i.profile_image %}
+            <img src="{{ i.profile_image.url }}" class="profile-img rounded-circle"
+              style="width:45px;height:45px;object-fit:cover;">
+            {% else %}
+            N/A
+            {% endif %}
+          </td>
+          <td> {{ i.course }} </td>
+          <td> {{ i.year }} </td>
+          <td> {{ i.roll_number }} </td>
+          <td> {{ i.department.name }} </td>
+          <td>
+            <a href="{% url 'edit_student' pk=i.id %}" class="btn btn-sm btn-outline-success me-1">Edit</a>
+            <a href="{% url 'delete_student' pk=i.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+
+        {% if not all_students %}
+        <tr>
+          <td colspan="6" class="text-center">No teachers found.</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endif %}
+
+{% if student_form %}
+<div class="card shadow p-4" style="border-top: 5px solid #007777; border-radius: 14px;">
+  <h4 class="mb-3 text-center" style="color:#007777;">Add Student</h4>
+
+  <form method="POST" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <!-- Name -->
+    <div class="mb-3">
+      {{ student_form.name.label_tag }}
+      {{ student_form.name }}
+      {% if student_form.name.errors %}
+      <div class="text-danger small">{{ student_form.name.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      {{ student_form.email.label_tag }}
+      {{ student_form.email }}
+      {% if student_form.email.errors %}
+      <div class="text-danger small">{{ student_form.email.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      {{ student_form.password.label_tag }}
+      {{ student_form.password }}
+      {% if student_form.password.errors %}
+      <div class="text-danger small">{{ student_form.password.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Contact -->
+    <div class="mb-3">
+      {{ student_form.contact.label_tag }}
+      {{ student_form.contact }}
+      {% if student_form.contact.errors %}
+      <div class="text-danger small">{{ student_form.contact.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Course -->
+    <div class="mb-3">
+      {{ student_form.course.label_tag }}
+      {{ student_form.course }}
+      {% if student_form.course.errors %}
+      <div class="text-danger small">{{ student_form.course.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Year -->
+    <div class="mb-3">
+      {{ student_form.year.label_tag }}
+      {{ student_form.year }}
+      {% if student_form.year.errors %}
+      <div class="text-danger small">{{ student_form.year.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Roll Number -->
+    <div class="mb-3">
+      {{ student_form.roll_number.label_tag }}
+      {{ student_form.roll_number }}
+      {% if student_form.roll_number.errors %}
+      <div class="text-danger small">{{ student_form.roll_number.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Department -->
+    <div class="mb-3">
+      {{ student_form.department.label_tag }}
+      {{ student_form.department }}
+      {% if student_form.department.errors %}
+      <div class="text-danger small">{{ student_form.department.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Profile Image -->
+    <div class="mb-3">
+      {{ student_form.profile_image.label_tag }}
+      {{ student_form.profile_image }}
+      {% if student_form.profile_image.errors %}
+      <div class="text-danger small">{{ student_form.profile_image.errors|striptags }}</div>
+      {% endif %}
+    </div>
+
+    <!-- Submit -->
+    <div class="text-center">
+      <button type="submit" class="btn text-white px-4" style="background-color:#007777;">
+        Add Student
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endif %}
+
+{% if edit_student_form %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ edit_student_form.as_p }}
+  <button type="submit" class="btn btn-success">Update</button>
+</form>
+
+
+{% endif %}
+
+
+
+{% if department %}
+<div class="container-fluid py-3">
+  <div class="d-flex align-items-center flex-wrap mb-3">
+    <h4 class="mb-0"><span class="brand-text" style="color:#007777;">Admin</span></h4>
+    <a href="{% url 'add_department' %}" class="ms-auto btn btn-sm btn-success mt-2 mt-sm-0">+ Add Department</a>
+  </div>
+</div>
+
+<div class="table-container" style="max-width:1200px; margin:auto;">
+  <!-- Header -->
+  <div class="table-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h3 class="mb-2 mb-md-0" style="color:#007777;">Manage Department</h3>
+    <form method="GET" class="d-flex flex-column flex-sm-row w-md-auto">
+      <input type="text" 
+             name="search" 
+             placeholder="Search Department..." 
+             class="form-control me-sm-2 mb-2 mb-sm-0"
+             value="{{ search_query }}">
+      <button type="submit" class="btn btn-primary  w-sm-auto">Search</button>
+    </form>
+  </div>
+
+  <!-- Table Responsive -->
+  <div class="table-responsive">
+    <table class="table align-middle table-hover" style="border-collapse: separate; border-spacing: 0 8px;">
+      <thead style="background-color:#007777; color:#fff; border-radius:8px;">
+        <tr>
+          <th>S.No</th>
+          <th>Department Name</th>
+          <th>Department Code</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in department_detail %}
+        <tr style="background-color:#fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius:5px;">
+          <td>{{ forloop.counter }}</td>
+          <td>{{ i.name }}</td>
+          <td>{{ i.code }}</td>
+          <td>
+            <a href="{% url 'edit_department' pk=i.id %}" class="btn btn-sm btn-outline-success me-1">Edit</a>
+            <a href="{% url 'delete_department' pk=i.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+        {% if not department_detail %}
+        <tr>
+          <td colspan="6" class="text-center text-muted">No department found.</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endif %}
+
+{% if department_form %}
+<section class="signup-section d-flex justify-content-center align-items-center py-5"
+  style="background-color: #f8f9fa;">
+  <div class="signup-card p-4"
+    style="width: 400px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+    <h3 class="text-center mb-4">Create Department</h3>
+    <form action="{% url 'add_department' %}" method="post" novalidate>
+      {% csrf_token %}
+      <!-- Email -->
+      <div class="mb-3">
+        {{ department_form.name }}
+        {% for error in department_form.name.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        {{ department_form.code }}
+        {% for error in department_form.code.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div style="text-align: center;">
+        <button type="submit" class="btn w-50 btn-custom"
+          style="background-color:#007777; color:white; width:200px;">Add department</button>
+      </div>
+    </form>
+  </div>
+
+</section>
+{% endif %}
+
+{% if department_form_edit %}
+<section class="signup-section d-flex justify-content-center align-items-center py-5"
+  style="background-color: #f8f9fa;">
+  <div class="signup-card p-4"
+    style="width: 400px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+    <h3 class="text-center mb-4">Edit Department</h3>
+    <form action="{% url 'edit_department' department_form_edit.instance.id %}" method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        {{ department_form_edit.name }}
+        {% for error in department_form_edit.name.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="mb-3">
+        {{ department_form_edit.code }}
+        {% for error in department_form_edit.code.errors %}
+        <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div style="text-align: center;">
+        <button type="submit" class="btn w-50 btn-custom" style="background-color:#007777; color:white; width:200px;">
+          Update Department
+        </button>
+      </div>
+    </form>
+
+  </div>
+
+</section>
+{% endif %}
+
+
+{% if ebook_list %}
+<div class="container-fluid py-3">
+  <div class="d-flex flex-wrap align-items-center mb-3">
+    <h4 class="mb-0">
+      <span class="brand-text" style="color:#007777;">Admin</span>
+    </h4>
+    <a href="{% url 'upload_ebooks' %}" class="ms-auto btn btn-sm btn-success mt-2 mt-sm-0">
+      + Upload Ebooks
+    </a>
+  </div>
+</div>
+
+<div class="container-fluid" style="max-width:1200px; margin:auto;">
+<!-- Header -->
+  <div class="table-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h3 class="mb-2 mb-md-0" style="color:#007777;">Manage Ebooks</h3>
+    <form method="GET" class="d-flex flex-column flex-sm-row w-md-auto">
+      <input type="text" 
+             name="search" 
+             placeholder="Search Ebooks..." 
+             class="form-control me-sm-2 mb-2 mb-sm-0"
+             value="{{ search_query }}">
+      <button type="submit" class="btn btn-primary  w-sm-auto">Search</button>
+    </form>
+  </div>
+
+  <!-- Responsive Table -->
+  <div class="table-responsive">
+    <table class="table align-middle table-hover" style="border-collapse: separate; border-spacing: 0 8px;">
+      <thead style="background-color:#007777; color:#fff; border-radius:8px;">
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>File</th>
+          <th>Uploaded At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for book in ebooks %}
+        <tr>
+          <td>{{ book.title }}</td>
+          <td>{{ book.description }}</td>
+          <td>
+            <a href="{{ book.file.url }}" target="_blank" class="btn btn-primary btn-sm">
+              <i class="bi bi-book"></i> Read
+            </a>
+          </td>
+          <td>{{ book.uploaded_at }}</td>
+          <td>
+            <a href="{% url 'edit_book' pk=book.id %}" class="btn btn-sm btn-outline-success me-1">Edit</a>
+            <a href="{% url 'delete_ebook' pk=book.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+{% endif %}
+
+{% if form %}
+<div class="container mt-4">
+  <h2>Upload E-Book</h2>
+  <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm">
+    {% csrf_token %}
+    <div class="mb-3">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+    <div class="mb-3">
+      {{ form.file.label_tag }}
+      {{ form.file }}
+    </div>
+    <button type="submit" class="btn " style="background-color: #007777; color: white;"> Upload</button>
+  </form>
+</div>
+
+{% endif %}
+
+{% endblock %}

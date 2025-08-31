@@ -1,0 +1,384 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+
+{% block title %}
+Edunexus - Teacher Dashboard
+{% endblock %}
+{% block css %}
+<!-- <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}"> -->
+{% endblock %}
+
+
+{% block nav_right %}
+👤 Welcome
+{% endblock %}
+
+{% block sidebar %}
+
+<li><a href="{% url 'Teacher_Dashboard' %}" class="capsule"><i class="fa fa-home me-2"></i> Dashboard</a></li>
+<li><a href="{% url 'my_profile_teacher' %}" class="capsule"><i class="fa fa-home me-2"></i> My Profile</a></li>
+<li><a href="{% url 'manage_students_teacher' %}" class="capsule"><i class="fa fa-users me-2"></i> Manage Students</a>
+</li>
+<li><a href="{% url 'ebook_list_teacher' %}" class="capsule"><i class="fa fa-calendar me-2"></i>E-Library</a></li>
+<li><a href="{% url 'log_out' %}" class="capsule"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
+
+
+{% endblock %}
+
+{% block main %}
+<section class="container mt-4">
+
+    {% if form %}
+    <!-- Teacher Profile Form -->
+    <div class="card p-4">
+        <h3 class="mb-3">Fill Your Profile</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+
+    </div>
+
+    {% endif %}
+
+    {% if dashboard %}
+
+    <div class="container-fluid px-4">
+        <h2 class="mt-4 text-center text-md-start">
+            Teacher <span style="color:#007777;">Dashboard</span>
+        </h2>
+
+        <!-- Top Cards -->
+        <div class="row mt-4 g-3">
+            <div class="col-12 col-md-4">
+                <div class="card shadow-sm border-0 text-center h-100" style="border-top:4px solid #007777;">
+                    <div class="card-body">
+                        <h5 class="text-muted">Total Students</h5>
+                        <h3 class="fw-bold" style="color:#007777;">{{ data.total_students }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card shadow-sm border-0 text-center h-100" style="border-top:4px solid #007777;">
+                    <div class="card-body">
+                        <h5 class="text-muted">Designation</h5>
+                        <h3 class="fw-bold" style="color:#007777;">{{ data.designation }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="card shadow-sm border-0 text-center h-100" style="border-top:4px solid #007777;">
+                    <div class="card-body">
+                        <h5 class="text-muted">Departments</h5>
+                        <h3 class="fw-bold" style="color:#007777;">{{ data.total_departments }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Middle Section -->
+        <div class="row mt-4">
+            <!-- Recent Students -->
+            <div class="col-12 col-lg-8 mb-3 mb-lg-0"> <!-- mobile full, lg+ me 8 -->
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 style="color:#007777;">Recent Students</h5>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Department</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for student in data.recent_students %}
+                                    <tr>
+                                        <td>{{ student.name }}</td>
+                                        <td>{{ student.student.Email }}</td>
+                                        <td>{{ student.department }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">
+                                            No recent students
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-12 col-lg-4"> <!-- mobile full, lg+ me 4 -->
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 style="color:#007777;">Quick Actions</h5>
+
+                        <a href="{% url 'my_profile_teacher' %}" class="btn w-100 mb-2"
+                            style="background:#007777; color:white;">
+                            My Profile
+                        </a>
+                        <a href="{% url 'manage_students_teacher' %}" class="btn w-100 mb-2"
+                            style="background:#007777; color:white;">
+                            Manage Students
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Department -->
+        <div class="row mt-4">
+            <div class="col-12"> <!-- full width on all devices -->
+                <div class="card shadow-sm border-0 w-100" style="border-radius:14px;">
+                    <div class="card-body">
+                        <h5 class="mb-3" style="color:#007777;">My Department</h5>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width:10%;">S.No</th>
+                                        <th style="width:45%;">Department</th>
+                                        <th style="width:45%;">Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{ data.teacher_profile.department.name }}</td>
+                                        <td>{{ data.teacher_profile.department.code }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endif %}
+
+
+{% if manage_students %}
+<div class="container-fluid py-3">
+    <div class="d-flex align-items-center mb-3">
+        <h4 class="mb-0">
+            <span class="brand-text" style="color:#007777;">Teacher</span>
+        </h4>
+    </div>
+</div>
+
+<div class="table-container" style="max-width:1200px; margin:auto;">
+    <!-- Header -->
+   <!-- Header -->
+  <div class="table-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h3 class="mb-2 mb-md-0" style="color:#007777;">Manage student</h3>
+    <form method="GET" class="d-flex flex-column flex-sm-row w-md-auto">
+      <input type="text" 
+             name="search" 
+             placeholder="Search Studnet..." 
+             class="form-control me-sm-2 mb-2 mb-sm-0"
+             value="{{ search_query }}">
+      <button type="submit" class="btn btn-primary  w-sm-auto">Search</button>
+    </form>
+  </div>
+
+    <!-- Students Table -->
+    <div class="table-responsive">
+        <table class="table align-middle table-hover" 
+               style="border-collapse: separate; border-spacing: 0 8px;">
+            <thead style="background-color:#007777; color:#fff;">
+                <tr>
+                    <th>S No.</th>
+                    <th>Name</th>
+                    <th>Profile</th>
+                    <th>Course</th>
+                    <th>Year</th>
+                    <th>Roll No</th>
+                    <th>Department</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in all_students %}
+                <tr style="background-color:#fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius:5px;">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.name }}</td>
+                    <td>
+                        {% if i.profile_image %}
+                            <img src="{{ i.profile_image.url }}" 
+                                 class="rounded-circle" 
+                                 style="width:45px;height:45px;object-fit:cover;">
+                        {% else %}
+                            <span class="text-muted">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ i.course }}</td>
+                    <td>{{ i.year }}</td>
+                    <td>{{ i.roll_number }}</td>
+                    <td>{{ i.department.name }}</td>
+                    <td>
+                        <a href="{% url 'edit_student_teacher' pk=i.id %}" 
+                           class="btn btn-sm btn-outline-success me-1">Edit</a>
+                        <a href="{% url 'delete_student_teacher' pk=i.id %}" 
+                           class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No students found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    {% endif %}
+
+    {% if edit_student_teacher_form %}
+    <div class="container mt-4">
+        <h3 class="mb-3" style="color:#007777;">Edit Student</h3>
+        <form method="POST" enctype="multipart/form-data" class="border p-3 rounded shadow-sm">
+            {% csrf_token %}
+            {{ edit_student_teacher_form.as_p }}
+            <button type="submit" class="btn btn-success">Save Changes</button>
+            <a href="{% url 'manage_students_teacher' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+    {% endif %}
+
+
+    {% if my_profile_card %}
+
+    <div class="card profile-card p-4 shadow-lg border-0 rounded-3 mt-4"
+        style="max-width: 750px; margin:auto; border-top: 5px solid #007777;">
+        <div class="row g-3 align-items-center text-center text-md-start">
+
+            <!-- Profile Image -->
+            <div class="col-12 col-md-4">
+                <img src="{{ data.profile.url }}" alt="Profile Photo" class="img-fluid rounded-circle shadow-sm"
+                    style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #007777;">
+            </div>
+
+            <!-- Profile Details -->
+            <div class="col-12 col-md-8">
+                <div class="card-body">
+                    <h4 class="card-title mb-2" style="color:#007777;">{{ data.name }}</h4>
+                    <p class="text-muted mb-1"><b>Department:</b> {{ data.department }}</p>
+                    <p class="text-muted mb-1"><b>Email:</b> {{ data.email }}</p>
+                    <p class="text-muted mb-0"><b>Contact:</b> {{ data.contact }}</p>
+                    <a href="{% url 'edit_my_profile_teacher' pk=data.profile_id %}" class="btn edit-btn mt-2 px-4"
+                        style="background:#007777; color:white;">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+
+    {% if my_profile_edit_form %}
+    <div class="container mt-4">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header text-white" style="background-color:#007777;">
+                <h4 class="mb-0">Edit My Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- form fields -->
+                    <div class="mb-3">
+                        {{ my_profile_edit_form.as_p }}
+                    </div>
+
+                    <!-- buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'my_profile_teacher' %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn text-white" style="background-color:#007777;">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+    {% if ebook_list %}
+<div class="container-fluid py-3">
+    <div class="d-flex align-items-center mb-3 flex-wrap">
+        <h4 class="mb-2 mb-sm-0">
+            <span class="brand-text" style="color:#007777;">Admin</span>
+        </h4>
+        
+    </div>
+</div>
+
+<div class="table-container" style="max-width:1200px; margin:auto;">
+    <!-- Header -->
+    <!-- Header -->
+  <div class="table-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+    <h3 class="mb-2 mb-md-0" style="color:#007777;">Ebooks</h3>
+    <form method="GET" class="d-flex flex-column flex-sm-row w-md-auto">
+      <input type="text" 
+             name="search" 
+             placeholder="Search Ebooks..." 
+             class="form-control me-sm-2 mb-2 mb-sm-0"
+             value="{{ search_query }}">
+      <button type="submit" class="btn btn-primary  w-sm-auto">Search</button>
+    </form>
+  </div>
+
+    <!-- Responsive Table -->
+    <div class="table-responsive">
+        <table class="table align-middle table-hover" 
+               style="border-collapse: separate; border-spacing: 0 8px; min-width:600px;">
+            <thead style="background-color:#007777; color:#fff; border-radius:8px;">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>File</th>
+                    <th>Uploaded At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in ebooks %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td class="text-truncate" style="max-width:250px;">{{ book.description }}</td>
+                    <td>
+                        <a href="{{ book.file.url }}" target="_blank" class="btn btn-primary btn-sm">
+                            <i class="bi bi-book"></i> Read
+                        </a>
+                    </td>
+                    <td>{{ book.uploaded_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    {% endif %}
+
+    {% endblock %}

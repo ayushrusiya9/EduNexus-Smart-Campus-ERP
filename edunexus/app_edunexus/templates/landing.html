@@ -1,0 +1,182 @@
+{% extends "base_landing.html" %}
+{% load static %}
+
+
+{% block css %}
+<link rel="stylesheet" href="https://res.cloudinary.com/duhg4tvty/raw/upload/v1756632280/landing_ejcwxb.css">
+{% endblock  %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-light py-5" style="margin-top: 10px;"> 
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Left Text -->
+      <div class="col-lg-6">
+        <h1 class="fw-bold" style="color: #007777;">Welcome to EduNexus</h1>
+        <p class="lead text-secondary">
+          A Smart Campus ERP for Students, Teachers, and Administrators.  
+          Manage profiles, access eLibrary, communicate via Help Desk, and organize resources – all in one platform.
+        </p>
+        <a href="{% url 'log_in' %}" class="btn btn-lg text-white" style="background-color: #007777">Get Started</a>
+      </div>
+
+      <!-- Right Image -->
+      <div class="col-lg-6 text-center">
+        <img src="https://res.cloudinary.com/duhg4tvty/image/upload/v1755183278/Pngtree_knowledge_tree_educational_elements_of_4346187_ugy8tx.png" 
+             alt="Learning" 
+             class="img-fluid rounded" 
+             style="width: auto; height: 500px; object-fit: cover; border-radius:50%;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Left Content -->
+      <div class="col-md-6">
+        <h2 class="fw-bold mb-4" style="color: #007777;">About EduNexus</h2>
+        <p class="mb-4">
+          EduNexus is a Smart Campus ERP designed to simplify academic management.  
+          From <b>student and teacher profiles</b> to a <b>digital eLibrary</b> and an integrated <b>Help Desk</b>,  
+          EduNexus connects every stakeholder in a campus through one secure platform.
+        </p>
+        <p>
+          Whether you're a student exploring resources, a teacher managing academics, or an admin handling operations –  
+          EduNexus is your one-stop solution.
+        </p>
+        <a href="#" class="btn mt-3" style="background-color: #007777; color: white;">Learn More</a>
+      </div>
+
+      <!-- Right Image -->
+      <div class="col-md-6 text-center">
+        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=500&q=80"
+             alt="About Us"
+             style="width: 100%; height: auto; object-fit: cover; border-radius: 10%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="py-5 bg-light">
+  <div class="container ">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold" style="color:#007777;">Why Choose EduNexus?</h2>
+      <p class="text-muted">Empowering campuses with modern management solutions.</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm p-4 hover-shadow">
+          <div class="mb-3">
+            <i class="fa fa-universal-access" aria-hidden="true" style="font-size:2.5rem; color:#007777;"></i>
+          </div>
+          <h5 class="fw-bold">Role-Based Access</h5>
+          <p class="text-muted">Separate dashboards and permissions for Students, Teachers, and Admins.</p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm p-4 hover-shadow">
+          <div class="mb-3">
+            <i class="fa-solid fa-book" style="font-size:2.5rem; color:#007777;"></i>
+          </div>
+          <h5 class="fw-bold">Smart eLibrary</h5>
+          <p class="text-muted">Access digital books, with options like "Add to Read Later" for students.</p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm p-4 hover-shadow">
+          <div class="mb-3">
+            <i class="fa fa-question-circle" aria-hidden="true" style="font-size:2.5rem; color:#007777;"></i>
+          </div>
+          <h5 class="fw-bold">Help Desk</h5>
+          <p class="text-muted">Integrated mailing system for students to connect with teachers and admins easily.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Modules Section -->
+<section class="courses-section py-5">
+  <div class="container text-center">
+    <h2 class="mb-4 fw-bold" style="color:#007777;">Core Modules</h2>
+    <div class="row g-4">
+      
+      <!-- Student Management -->
+      <div class="col-md-4">
+        <div class="course-card hover-shadow p-4 rounded shadow-sm">
+          <i class="fas fa-user-graduate fa-3x mb-3" style="color:#007777;"></i>
+          <h4 class="fw-bold">Student Management</h4>
+          <p>Manage student details, profiles, and personalized Read Later lists.</p>
+        </div>
+      </div>
+
+      <!-- Teacher Management -->
+      <div class="col-md-4">
+        <div class="course-card p-4 rounded shadow-sm">
+          <i class="fas fa-chalkboard-teacher fa-3x mb-3" style="color:#007777;"></i>
+          <h4 class="fw-bold">Teacher Management</h4>
+          <p>Handle teacher profiles and connect them with students effectively.</p>
+        </div>
+      </div>
+
+      <!-- Admin Control -->
+      <div class="col-md-4">
+        <div class="course-card p-4 rounded shadow-sm">
+          <i class="fas fa-user-shield fa-3x mb-3" style="color:#007777;"></i>
+          <h4 class="fw-bold">Admin Control</h4>
+          <p>Admins manage Teachers, Students, and the entire eLibrary with CRUD operations.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+ 
+<!-- Contact / Help Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold" style="color:#007777;">Contact Us</h2>
+      <p class="text-muted">Have questions? Reach out through our Help & Support section.</p>
+    </div>
+
+    <div class="card p-4 shadow-lg border-0 rounded-3 mt-4"
+         style="max-width:700px; margin:auto; border-top:5px solid #007777;">
+      <h4 class="mb-3" style="color:#007777;">Contact & Support</h4>
+
+      <form action="{% url 'help_section' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Your Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Your Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Message</label>
+          <textarea name="message" rows="4" class="form-control" required></textarea>
+        </div>
+
+        <button type="submit" class="btn px-4" style="background-color: #007777; color: white;">Send</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

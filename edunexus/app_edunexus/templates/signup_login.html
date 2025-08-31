@@ -1,0 +1,119 @@
+{% extends 'base_landing.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if form %}
+
+<section class="signup-section d-flex justify-content-center align-items-center py-5"
+    style="background-color: #f8f9fa;">
+    <div class="signup-card p-4"
+    style="width: 400px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+    <h3 class="text-center mb-4">Signup</h3>
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- Non-field Errors -->
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Name -->
+    <div class="mb-3">
+        {{ form.Name }}
+        {% for error in form.Name.errors %}
+            <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+        {{ form.Email }}
+        {% for error in form.Email.errors %}
+            <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- Contact -->
+    <div class="mb-3">
+        {{ form.Contact }}
+        {% for error in form.Contact.errors %}
+            <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- Role -->
+    <div class="mb-3">
+        {{ form.Role }}
+        {% for error in form.Role.errors %}
+            <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+        {{ form.Password }}
+        {% for error in form.Password.errors %}
+            <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="mb-3">
+        {{ form.Confirm_password }}
+        {% for error in form.Confirm_password.errors %}
+            <div class="text-danger small">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div style="text-align: center;">
+        <button type="submit" class="btn w-50 btn-custom"
+            style="background-color:#007777; color:white; width:200px;">Signup</button>
+        <p>have account?<span><a href="{% url 'log_in' %}">Login</a></span></p>
+    </div>
+</form>
+
+</div>
+
+</section>
+{% endif %}
+
+{% if login_form %}
+<section class="signup-section d-flex justify-content-center align-items-center py-5"
+    style="background-color: #f8f9fa;">
+    <div class="signup-card p-4"
+    style="width: 400px; background-color: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+    <h3 class="text-center mb-4">Log in</h3>
+    <form action="{% url 'log_in' %}" method="post" novalidate>
+        {% csrf_token %}
+        <!-- Email -->
+        <div class="mb-3">
+            {{ login_form.Email }}
+            {% for error in login_form.Email.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            {{ login_form.Password }}
+            {% for error in login_form.Password.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center;">
+            <button type="submit" class="btn w-50 btn-custom"
+                style="background-color:#007777; color:white; width:200px;">Login</button>
+            <p>don't have account?<span><a href="{% url 'sign_up' %}">SignUp</a></span></p>
+        </div>
+    </form>
+</div>
+
+{% endif %}
+
+{% endblock %}
