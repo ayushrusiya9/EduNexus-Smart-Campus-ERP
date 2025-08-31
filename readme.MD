@@ -33,7 +33,7 @@ It simplifies e-learning by providing dashboards, resource sharing, and profile 
 
 ---
 
-## 🖥️ Tech Stack
+## Tech Stack
 
 - **Backend**: Django, SQLite3  
 - **Frontend**: HTML, CSS, Bootstrap  
