@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import SignupForm, LoginForm, StudentProfileForm,DepartmentForm,TeacherProfileForm,EbookForm,StudentProfileFormTeacher,StudentForm
-from .models import User, StudentProfile,TeacherProfile,Department,EBook
+from .forms import SignupForm, LoginForm, StudentProfileForm,DepartmentForm,TeacherProfileForm,EbookForm,StudentProfileFormTeacher,StudentForm,AnnouncementForm
+from .models import User, StudentProfile,TeacherProfile,Department,EBook,Announcement
 from django.db.models import Q
 from django.core.mail import send_mail
 # Landing Page 
@@ -862,3 +862,123 @@ def log_out(request):
     elif 'user_id' in request.session:
         del request.session['user_id']
         return redirect('landing_page')
+
+
+# for anouncement
+
+# List all announcements (for admin, teacher, student)
+def announcement_list(request):
+    user_id = request.session.get('user_id')
+    admin_email = request.session.get('admin_email')
+
+    if not user_id and not admin_email:
+        return redirect('log_in')
+
+    # Announcements sabke liye same
+    announcements = Announcement.objects.all().order_by('-created_at')
+
+    # Admin ke liye
+    if admin_email:
+        return render(request, 'admin_dashboard.html', {
+            "announcements": announcements,
+            "announcement_list": "announcement_list",
+            "admin_email": admin_email
+        })
+
+    # Teacher ke liye
+    user = User.objects.filter(id=user_id).first()
+    if user.Role == 'Teacher':
+        return render(request, 'teacher_dashboard.html', {
+            "announcements": announcements,
+            "announcement_list": "announcement_list",
+            "user_id": user_id
+        })
+
+    # Student ke liye (read-only)
+    return render(request, 'student_dashboard.html', {
+        "announcements": announcements,
+        "announcement_list": "announcement_list",
+        "user_id": user_id
+    })
+
+
+# Create Announcement (Admin/Teacher)
+def announcement_create(request):
+    admin_email = request.session.get('admin_email')
+    user_id = request.session.get('user_id')
+
+    if not admin_email and not user_id:
+        return redirect('log_in')
+
+    # Role check
+    user = None
+    if admin_email:
+        user = User.objects.filter(Email=admin_email, Role="Teacher").first()  # dummy, admin create
+    else:
+        user = User.objects.filter(id=user_id).first()
+        if not user or user.Role not in ['Teacher', 'Student']:
+            return HttpResponse("You are not authorized to create announcement")
+
+    if request.method == 'POST':
+        form = AnnouncementForm(request.POST)
+        if form.is_valid():
+            ann = form.save(commit=False)
+            ann.created_by = user
+            ann.save()
+            return redirect('announcement_list')
+    else:
+        form = AnnouncementForm()
+
+    return render(request,'admin_dashboard.html',{"announcement_form":form,"announcement_create":"announcement_create"})
+
+# Update Announcement
+def announcement_update(request, pk):
+    admin_email = request.session.get('admin_email')
+    user_id = request.session.get('user_id')
+
+    if not admin_email and not user_id:
+        return redirect('log_in')
+
+    ann = Announcement.objects.get(id=pk)
+
+    user = None
+    if admin_email:
+        user = User.objects.filter(Email=admin_email).first()
+    else:
+        user = User.objects.filter(id=user_id).first()
+
+    # Only admin or teacher can edit
+    if not admin_email and not(user.Role == 'Teacher'):
+        return HttpResponse("You are not authorized to edit this announcement")
+
+    if request.method == 'POST':
+        form = AnnouncementForm(request.POST, instance=ann)
+        if form.is_valid():
+            form.save()
+            return redirect('announcement_list')
+    else:
+        form = AnnouncementForm(instance=ann)
+
+    return render(request,'admin_dashboard.html',{"announcement_form":form,"announcement_update":"announcement_update"})
+
+# Delete Announcement
+def announcement_delete(request, pk):
+    admin_email = request.session.get('admin_email')
+    user_id = request.session.get('user_id')
+
+    if not admin_email and not user_id:
+        return redirect('log_in')
+
+    ann = Announcement.objects.get(id=pk)
+
+    user = None
+    if admin_email:
+        user = User.objects.filter(Email=admin_email).first()
+    else:
+        user = User.objects.filter(id=user_id).first()
+
+    if not admin_email and not(user.Role == 'Teacher'):
+        return HttpResponse("You are not authorized to delete this announcement")
+
+    ann.delete()
+    return redirect('announcement_list')

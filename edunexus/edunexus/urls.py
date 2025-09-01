@@ -32,6 +32,11 @@ urlpatterns = [
 
     path('admin_dashboard/',views.admin_dashboard,name='admin_dashboard'),
 
+    path('admin_dashboard/announcements/', views.announcement_list, name='announcement_list'),
+    path('admin_dashboard/announcements/add/', views.announcement_create, name='announcement_create'),
+    path('admin_dashboard/announcements/edit/<int:pk>/', views.announcement_update, name='announcement_update'),
+    path('admin_dashboard/announcements/delete/<int:pk>/', views.announcement_delete, name='announcement_delete'),
+
     path('admin_dashboard/manage_teachers/',views.manage_teachers,name='manage_teachers'),
     path('admin_dashboard/manage_teachers/add_teachers/',views.add_teachers,name='add_teachers'),
     path('admin_dashboard/manage_teachers/edit_teacher/<int:pk>/',views.edit_teacher,name='edit_teacher'),

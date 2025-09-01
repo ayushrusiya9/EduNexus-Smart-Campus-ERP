@@ -17,6 +17,8 @@ Edunexus - Student Dashboard
 
 <li><a href="{% url 'Student_Dashboard' %}" class="capsule"><i class="fa fa-home me-2"></i> Dashboard</a></li>
 <li><a href="{% url 'my_profile' %}" class="capsule"><i class="fa fa-home me-2"></i> My Profile</a></li>
+<li><a href="{% url 'announcement_list' %}" class="capsule" style="cursor: pointer;"><i class="fa-solid fa-bullhorn"></i>
+    Announcements</a></li>
 <li><a href="{% url 'ebook_list_student' %}" class="capsule"><i class="fa fa-calendar me-2"></i>E-Library</a></li>
 <li><a href="{% url 'help_section' %}" class="capsule"><i class="fa fa-question-circle" aria-hidden="true"></i> Help</a>
 <li><a href="{% url 'log_out' %}" class="capsule"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
@@ -375,6 +377,60 @@ Edunexus - Student Dashboard
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+{% if announcement_list %}
+<div class="container py-4">
+    <h2 class="mb-3" style="color:#007777;">Announcements</h2>
+
+    <!-- Create / Edit form -->
+    {% if announcement_form %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title" style="color:#007777;">{% if announcement_create %}Add Announcement{% else %}Edit Announcement{% endif %}</h5>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ announcement_form.title.label_tag }}
+                    {{ announcement_form.title }}
+                    {% if announcement_form.title.errors %}
+                        <div class="text-danger">{{ announcement_form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    {{ announcement_form.content.label_tag }}
+                    {{ announcement_form.content }}
+                    {% if announcement_form.content.errors %}
+                        <div class="text-danger">{{ announcement_form.content.errors }}</div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn" style="background:#007777; color:white;">
+                    {% if announcement_create %}Create{% else %}Update{% endif %}
+                </button>
+                <a href="{% url 'announcement_list' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Announcement list -->
+    <div class="list-group">
+        {% for ann in announcements %}
+        <div class="list-group-item mb-2 shadow-sm">
+            <h5 style="color:#007777;">{{ ann.title }}</h5>
+            <p>{{ ann.content }}</p>
+            <small>on {{ ann.created_at|date:"d M Y H:i" }}</small>
+            
+        
+        </div>
+        {% empty %}
+        <p>No announcements yet.</p>
+        {% endfor %}
     </div>
 </div>
 
