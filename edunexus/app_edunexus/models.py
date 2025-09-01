@@ -1,5 +1,6 @@
 from django.db import models
 from cloudinary_storage.storage import MediaCloudinaryStorage,RawMediaCloudinaryStorage
+from django.utils import timezone
 
 # Common User table
 class User(models.Model):
@@ -79,6 +80,18 @@ class Announcement(models.Model):
 
     class Meta:
         db_table = "Announcement"
+
+    def __str__(self):
+        return self.title
+    
+
+class Notice(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'Notice'
 
     def __str__(self):
         return self.title

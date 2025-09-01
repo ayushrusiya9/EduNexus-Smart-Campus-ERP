@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import User, StudentProfile, TeacherProfile, Department,EBook,Announcement
+from .models import User, StudentProfile, TeacherProfile, Department,EBook,Announcement,Notice
 
 
 # SIGNUP FORM
@@ -383,3 +383,14 @@ class AnnouncementForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Enter title'}),
             'content': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Enter content','rows':4}),
         }
+
+
+class NoticeForm(forms.ModelForm):
+    class Meta:
+        model = Notice
+        fields = ['title', 'description']
+        widgets = {
+            'title':forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Title'}),
+            'description':forms.Textarea(attrs={'class':'form-control','placeholder':'Enter Description...'}),
+        }
+

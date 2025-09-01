@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import SignupForm, LoginForm, StudentProfileForm,DepartmentForm,TeacherProfileForm,EbookForm,StudentProfileFormTeacher,StudentForm,AnnouncementForm
-from .models import User, StudentProfile,TeacherProfile,Department,EBook,Announcement
+from .forms import SignupForm, LoginForm, StudentProfileForm,DepartmentForm,TeacherProfileForm,EbookForm,StudentProfileFormTeacher,StudentForm,AnnouncementForm,NoticeForm
+from .models import User, StudentProfile,TeacherProfile,Department,EBook,Announcement,Notice
 from django.db.models import Q
 from django.core.mail import send_mail
 # Landing Page 
@@ -982,3 +982,101 @@ def announcement_delete(request, pk):
 
     ann.delete()
     return redirect('announcement_list')
+
+
+# Notice List (sabke liye)
+def notice_list(request):
+    user_id = request.session.get('user_id')
+    admin_email = request.session.get('admin_email')
+
+    if not user_id and not admin_email:
+        return redirect('log_in')
+    
+    user = None
+    if admin_email:
+        user = User.objects.filter(Email=admin_email).first()
+    else:
+        user = User.objects.filter(id=user_id).first()
+
+    notices = Notice.objects.all().order_by('-created_at')
+
+    # role-wise html rendering
+    if user and user.Role == "Teacher":
+        return render(request, "teacher_dashboard.html", {"notices": notices, "notice_list": "notice_list"})
+    elif user and user.Role == "Student":
+        return render(request, "student_dashboard.html", {"notices": notices, "notice_list": "notice_list"})
+    else:  # admin
+        return render(request, "admin_dashboard.html", {"notices": notices, "notice_list": "notice_list"})
+
+
+# Create Notice
+def notice_create(request):
+    admin_email = request.session.get('admin_email')
+    user_id = request.session.get('user_id')
+
+    if not admin_email and not user_id:
+        return redirect('log_in')
+
+    # role check (only admin or teacher)
+    user = None
+    if admin_email:
+        user = User.objects.filter(Email=admin_email).first()
+    else:
+        user = User.objects.filter(id=user_id).first()
+        if not user or user.Role != "Teacher":
+            return HttpResponse("You are not authorized to create notices")
+
+    if request.method == "POST":
+        form = NoticeForm(request.POST)
+        if form.is_valid():
+            notice = form.save(commit=False)
+            notice.created_by = user
+            notice.save()
+            return redirect("notice_list")
+    else:
+        form = NoticeForm()
+
+    return render(request, "admin_dashboard.html", {"notice_form": form, "notice_create": "notice_create"})
+
+
+# Update Notice
+def notice_update(request, pk):
+    admin_email = request.session.get('admin_email')
+    user_id = request.session.get('user_id')
+
+    if not admin_email and not user_id:
+        return redirect('log_in')
+
+    notice = Notice.objects.get(id=pk)
+
+   
+    # only admin or creator teacher
+    if not admin_email and not user_id:
+        return HttpResponse("You are not authorized to edit this notice")
+
+    if request.method == "POST":
+        form = NoticeForm(request.POST, instance=notice)
+        if form.is_valid():
+            form.save()
+            return redirect("notice_list")
+    else:
+        form = NoticeForm(instance=notice)
+
+    return render(request, "admin_dashboard.html", {"notice_form": form, "notice_update": "notice_update"})
+
+
+# Delete Notice
+def notice_delete(request, pk):
+    admin_email = request.session.get('admin_email')
+    user_id = request.session.get('user_id')
+
+    if not admin_email and not user_id:
+        return redirect('log_in')
+
+    notice = Notice.objects.get(id=pk)
+
+    if not admin_email and not user_id:
+        return HttpResponse("You are not authorized to delete this notice")
+
+    notice.delete()
+    return redirect("notice_list")

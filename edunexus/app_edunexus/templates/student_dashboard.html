@@ -19,6 +19,8 @@ Edunexus - Student Dashboard
 <li><a href="{% url 'my_profile' %}" class="capsule"><i class="fa fa-home me-2"></i> My Profile</a></li>
 <li><a href="{% url 'announcement_list' %}" class="capsule" style="cursor: pointer;"><i class="fa-solid fa-bullhorn"></i>
     Announcements</a></li>
+<li><a href="{% url 'notice_list' %}" class="capsule" style="cursor: pointer;"><i class="fa-solid fa-bell"></i>
+    Notice</a></li>
 <li><a href="{% url 'ebook_list_student' %}" class="capsule"><i class="fa fa-calendar me-2"></i>E-Library</a></li>
 <li><a href="{% url 'help_section' %}" class="capsule"><i class="fa fa-question-circle" aria-hidden="true"></i> Help</a>
 <li><a href="{% url 'log_out' %}" class="capsule"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
@@ -140,6 +142,10 @@ Edunexus - Student Dashboard
                                 style="background:#007777; color:white;">My Profile</a>
                             <a href="{% url 'ebook_list_student' %}" class="btn w-auto"
                                 style="background:#007777; color:white;">E-Library</a>
+                            <a href="{% url 'announcement_list' %}" class="btn w-auto"
+                                style="background:#007777; color:white;">Announcements</a>
+                            <a href="{% url 'notice_list' %}" class="btn w-auto"
+                                style="background:#007777; color:white;">Notices</a>
                             <a href="{% url 'help_section' %}" class="btn w-auto" style="background:#007777; color:white;">Contact</a>
                         </div>
                     </div>
@@ -434,6 +440,31 @@ Edunexus - Student Dashboard
     </div>
 </div>
 
+{% endif %}
+
+
+
+{% if notice_list %}
+<div class="card shadow p-3 rounded-3 mt-3">
+    <h5 class="mb-3" style="color:#007777;">Notices</h5>
+
+
+
+    <ul class="list-group">
+        {% for n in notices %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ n.title }}</strong><br>
+                <small>{{ n.description }}</small><br>
+                <span class="text-muted small">{{ n.created_at }}</span>
+            </div>
+            
+        </li>
+        {% empty %}
+        <li class="list-group-item">No notices available.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endif %}
 
 {% endblock %}
