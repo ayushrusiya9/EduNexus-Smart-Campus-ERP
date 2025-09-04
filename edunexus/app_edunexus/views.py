@@ -1049,7 +1049,6 @@ def notice_update(request, pk):
 
     notice = Notice.objects.get(id=pk)
 
-   
     # only admin or creator teacher
     if not admin_email and not user_id:
         return HttpResponse("You are not authorized to edit this notice")
@@ -1065,7 +1064,7 @@ def notice_update(request, pk):
     return render(request, "admin_dashboard.html", {"notice_form": form, "notice_update": "notice_update"})
 
 
-# Delete Notice
+# Delete Notice 
 def notice_delete(request, pk):
     admin_email = request.session.get('admin_email')
     user_id = request.session.get('user_id')
