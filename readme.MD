@@ -45,14 +45,14 @@ It simplifies e-learning by providing dashboards, resource sharing, and profile 
 ## Screenshots
 
 - **Admin Dashboard**
-![Admin Dashboard](https://res.cloudinary.com/duhg4tvty/image/upload/v1756631575/Admin_ccpzkq.png)
+![Admin Dashboard](https://res.cloudinary.com/duhg4tvty/image/upload/v1756999276/Screenshot_2025-09-04_204942_lsokyj.png)
 
 - **Teacher Dashboard**
-![Teacher Dashboard](https://res.cloudinary.com/duhg4tvty/image/upload/v1756631714/teacher_xoikrt.png)
+![Teacher Dashboard](https://res.cloudinary.com/duhg4tvty/image/upload/v1756999328/Screenshot_2025-09-04_204543_bhqkjb.png)
 
 
 - **Student Dashboard**
-![Student Dashboard](https://res.cloudinary.com/duhg4tvty/image/upload/v1756631723/Screenshot_2025-08-31_143909_qbheze.png)
+![Student Dashboard](https://res.cloudinary.com/duhg4tvty/image/upload/v1756999375/Screenshot_2025-09-04_203824_pjtvyv.png)
 
 
 ## Author
